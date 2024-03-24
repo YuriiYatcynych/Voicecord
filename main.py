@@ -9,7 +9,7 @@ from keep_alive import keep_alive
 status = "online" #online/dnd/idle
 
 GUILD_ID = 813024267661738034
-CHANNEL_ID = 1221526356735561748
+CHANNEL_ID = 1199301391034888292
 SELF_MUTE = True
 SELF_DEAF = False
 
