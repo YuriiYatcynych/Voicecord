@@ -32,35 +32,33 @@ userid = userinfo["id"]
 
 def joiner(token, status):
     try:
+        # Ініціалізація WebSocket та підключення до серверу Discord
         ws = websocket.WebSocket()
         ws.connect('wss://gateway.discord.gg/?v=9&encoding=json')
 
+        # Отримання даних з підключення
         start = json.loads(ws.recv())
         heartbeat = start['d']['heartbeat_interval']
 
+        # Надсилання автентифікаційних даних та даних голосового каналу
         auth = {"op": 2, "d": {"token": token, "properties": {"$os": "Windows 10", "$browser": "Google Chrome", "$device": "Windows"}, "presence": {"status": status, "afk": False}}, "s": None, "t": None}
         vc = {"op": 4, "d": {"guild_id": GUILD_ID, "channel_id": CHANNEL_ID, "self_mute": SELF_MUTE, "self_deaf": SELF_DEAF}}
         ws.send(json.dumps(auth))
         ws.send(json.dumps(vc))
 
+        # Підтримка з'єднання
         time.sleep(heartbeat / 1000)
         ws.send(json.dumps({"op": 1, "d": None}))
-
-        return ws  # Повертаємо об'єкт WebSocket
     except Exception as e:
         print(f"An error occurred: {e}")
-        if ws:
-            ws.close()
+        ws.close()
 
 def run_joiner():
     os.system("cls" if os.name == "nt" else "clear")
     print(f"Logged in as {username}#{discriminator} ({userid}).")
-    ws = joiner(usertoken, status)  # Отримуємо об'єкт WebSocket
     while True:
-        if ws:
-            joiner(usertoken, status)  # Перепідключення при втраті з'єднання
+        joiner(usertoken, status)
         time.sleep(30)
 
 keep_alive()
 run_joiner()
-
